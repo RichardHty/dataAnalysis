@@ -24,6 +24,7 @@ or<-(male_high_temp_proportion/(1-male_high_temp_proportion))/(female_high_temp_
 #multiple logistic regression
 m2<-glm(temp_level ~raw_data$sex+raw_data$Heart.rate,family = binomial)
 summary(m2)
+#todo change the way to calculate or
 or_sex<-exp(1.38919)
 or_heart_rate<-exp(0.06337)
 #install.packages('pROC')

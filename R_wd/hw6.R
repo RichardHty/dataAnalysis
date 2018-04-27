@@ -20,19 +20,21 @@ rd<-male_high_temp_proportion-female_high_temp_proportion
 #logistic regression
 m<-glm(temp_level ~ raw_data$sex, family=binomial)
 summary(m)
-or<-(male_high_temp_proportion/(1-male_high_temp_proportion))/(female_high_temp_proportion/(1-female_high_temp_proportion))
-#multiple logistic regression
-m2<-glm(temp_level ~raw_data$sex+raw_data$Heart.rate,family = binomial)
-summary(m2)
-#todo change the way to calculate or
-or_sex<-exp(1.38919)
-or_heart_rate<-exp(0.06337)
+exp(cbind(OR = coef(m), confint.default(m)))
+#c-statistic
 #install.packages('pROC')
 library(pROC) 
 m_prob <- predict(m, type=c("response"))
 m_g<-roc(temp_level~m_prob)
+plot(m_g)
 m_c_statistic<-auc(m_g)
 
+#multiple logistic regression
+m2<-glm(temp_level ~raw_data$sex+raw_data$Heart.rate,family = binomial)
+summary(m2)
+exp(m2$coefficients[3]*10)
+#c-statistic for m2
 m2_prob <- predict(m2, type=c("response"))
 m2_g<-roc(temp_level~m2_prob)
 m2_c_statistic<-auc(m2_g)
+plot(m2_g)

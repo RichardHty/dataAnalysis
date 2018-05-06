@@ -139,7 +139,36 @@ prop.test('[s]',' [n]', p='[p0]', alternative='[alternative]',
 #[alternative]: “two.sided” (default), “greater”, “less” [confdence level]: default 0.95
 #Correct = FALSE specifes not to use a continuity correction; Default is to apply correction
 
-#simple logistic regression
+#logistic regression
+m<-glm(data$event~data$explanatory1 + data$explanatory2 + ..., family=binomial)
+#OR per 1 unit increase
+exp(cbind(OR = coef(m), confnt.default(m)))
+#OR per 10 unit increase 
+exp(m$coefcients[2]*10)
+#confidence interval for 10 units increase
+exp((m$coefcients[2]-qnorm(0.975)*summary(m)$coefcients[2,2])*10)
+exp((m$coefcients[2]+qnorm(0.975)*summary(m)$coefcients[2,2])*10)
+# predicted risk for each patient 
+risk <- predict(m, type=c("response"))
+#or for patient with cholesterol of 190
+exp(m$coefcients[1]+m$coefcients[2]*190)/(1+exp(m$coefcients[1]+m$coefcients[2]*190))
 
-
-
+# multiple logistic regression
+data$male <- ifelse(data$sex =="M", 1, 0)
+m2<-glm(data$event ~ data$chol + data$male + data$age, family=binomial)
+summary(m2)
+# overall test
+# install.package("aod")
+library(aod)
+wald.test(b=coef(m2), Sigma = vcov(m2), Terms = 2:4)
+# Terms: An optional integer vector specifying which coefcients should be jointly tested
+# Terms defnes to compare which regression coefcients, here we want to compare the 2 to 4 (frst is the intercept)
+# It gives as a result Chi-Squared test results, and p-value of it
+# if p is smaller than 0.05 you can reject the null hypothesis
+# ORs per 1 unit increase
+exp(cbind(OR = coef(m2), confnt.default(m2)))
+#ROC curve
+library(pROC) # for visualizing, smoothing and comparing receiver operating characteristic (ROC curves).
+data$prob <- predict(m, type=c("response")) 
+g <- roc(data$event ~ data$prob)
+plot(g)

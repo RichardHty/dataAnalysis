@@ -1,6 +1,8 @@
 #cheat sheet
-
+quantitative_data<-c(8,4,10,4,14,26)
 #quantitative data
+mean(quantitative_data)
+median(quantitative_data)
 quantile(data$variable)
 #qualitative data
 #class frequencies
@@ -26,17 +28,30 @@ z=1.2
 c = 0.8849303
 a = 0
 b = 1
+mu = 100
+sd = 5
+n = 10
+x = 104
 #area to the left of z
-z<-pnorm(z)
-z_score<-pnorm(z,mean=a,sd=b)
+probability_z<-pnorm(z)
+probability_z<-pnorm(z,mean=a,sd=b)
+p_value<-(1-pnorm(z))*2
+p_value<-1-pnorm(z)
 #z-score with a as the area to the left
-p<-qnorm(c)
-probability<-qnorm(c,mean=a,sd=b)
+z_score<-qnorm(c)
+z_score<-qnorm(c,mean=a,sd=b)
+z_score<-(x-mu)/(sd)
+z_score<-(x-mu)/(sd/sqrt(n))
 #get the point value of normal distribution
 d<-dnorm(x)
 
 #outlier
 boxplot()
+n = 20
+degreeOfFreedom = n-1
+mu = 10
+alpha = 0.05
+
 #from t-statistic calculate prob
 p<-pt(t_statistic,df=degreeOfFreedom)
 #from prob calculate t-statistic
@@ -47,11 +62,23 @@ t<-qt(prob,df=degreeOfFreedom)
 t.test(data$variable, mu=mu0, alternative='two.sided', conf.level=0.9)
 shark_len<- c(18.1, 23.4, 23.8, 24.1, 22.5, 19, 25.4, 23.1, 16.5, 26.7)
 t <- (mean(shark_len) - 20)/(sd(shark_len)/sqrt(length(shark_len))) 
-p <- 1 - pt(t , df=length(shark_len) - 1)
-t.test(shark_len, mu=20, alternctive="two sided", conf.level=0.9)
-
+p_value <- 1 - pt(t , df=length(shark_len) - 1)
+t.test(shark_len, mu=20, alternative="two.sided", conf.level=0.9)
+#two sample t-statistic
+t.test(decay$strength[decay$weeks==2], decay$strength[decay$weeks==16],
+       alternative="two.sided", conf.level=0.9)
+mean1 = 38
+mean2 = 12
+sd1 = 15
+sd2 = 10
+n1 = 9
+n2 = 11
+t<-(mean1-mean2)/sqrt(sd1^2/n1+sd2^2/n2)
+t<-qt(0.95,8)
+conf_up<-(mean1-mean2)+t*(sqrt(sd1^2/n1+sd2^2/n2))
+conf_down<-(mean1-mean2)-t*(sqrt(sd1^2/n1+sd2^2/n2))
 #correlation
-r<-cor(data)
+r<-cor(x_data,y_data)
 #t-test for linear association, nature is t-test so can be calculated through qt(prob,df)
 t_association<-r*(sqrt((n-2)/(1-r*r)))
 # or [alternative] = ‘two.sided’, ‘less’ (corresponds to negative association), or ‘greater’ (corresponds to positive association)
@@ -63,7 +90,15 @@ cor.test(data$explanatoryvariable, data$responsevariable,
 slr<-lm(data$response~data$explanatory) 
 abline(a=intercept, b=slope)
 # r square
-anova()
+anova(slr)
+
+totalss <- sum((salary1 - mean(salary1))^2)
+regss <- sum((fitted(m) - mean(salary1))^2)
+resiss <- sum((salary1-fitted(m))^2)
+fstatistic <- (regss/k)/(resiss/(n-k-1))
+pvalue <- 1-pf(fstatistic, df1=k, df2=n-k-1)
+
+r_2<-reg_ss/total_ss
 # Calculating probability from F-statistics
 pf('F statistic', df1='degree of freedom of the numerator', df2='degree of freedom of the denominator')
 #Calculating F-statistics from probability
